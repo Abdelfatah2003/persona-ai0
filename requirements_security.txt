@@ -1,0 +1,5 @@
+# Flask-Limitter for rate limiting
+Flask-Limiter>=3.5.0
+
+# PyJWT for JSON Web Tokens
+PyJWT>=2.8.0

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - PersonaAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-content {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+        
+        .user-profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .back-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .user-profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .user-avatar-large {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+        }
+        
+        .user-profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-profile-email {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .personality-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .similarity-display {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        
+        .similarity-display span {
+            color: #10b981;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .profile-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .profile-section h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label-info {
+            color: var(--text-secondary);
+        }
+        
+        .detail-value-info {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .trait-row {
+            margin-bottom: 1.25rem;
+        }
+        
+        .trait-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .trait-name {
+            font-weight: 600;
+        }
+        
+        .trait-score {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .trait-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        .trait-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .connect-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .connect-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .user-profile-container {
+                padding: 1rem;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+                    <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
+                </svg>
+                <span data-i18n="logo">PersonaAI</span>
+            </a>
+            
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="index.html#about" class="nav-link">About</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <div class="nav-user" id="navUser" style="display: none;">
+                        <a href="profile.html" class="nav-profile-link">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <span class="user-name" id="userName">User</span>
+                        </a>
+                        <a href="#" class="btn btn-outline btn-logout" onclick="handleLogout()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16,17 21,12 16,7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div id="navAuth">
+                        <a href="login.html" class="btn btn-outline">Login</a>
+                    </div>
+                    
+                    <button class="lang-toggle" onclick="toggleLanguage()">
+                        <span class="lang-en">EN</span>
+                        <span class="lang-separator">/</span>
+                        <span class="lang-ar">عربي</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="user-profile-container">
+            <a href="profile.html" class="back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span data-i18n="backToProfile">Back to My Profile</span>
+            </a>
+            
+            <div id="loading">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p data-i18n="loadingUserProfile">Loading user profile...</p>
+                </div>
+            </div>
+            
+            <div id="content" style="display: none;">
+                <div class="user-profile-header">
+                    <div class="user-avatar-large" id="userAvatarLarge">U</div>
+                    <h1 class="user-profile-name" id="profileUserName">Loading...</h1>
+                    <p class="user-profile-email" id="profileUserEmail"></p>
+                    <div class="personality-badge" id="personalityType">Loading...</div>
+                    <div class="similarity-display">
+                        <span id="similarityScore">0%</span> <span data-i18n="similarToYou">Similar to You</span>
+                    </div>
+                </div>
+                
+                <div class="profile-section">
+                    <h2 data-i18n="aboutUser">About</h2>
+                    <div class="detail-row">
+                        <span class="detail-label-info" data-i18n="ageLabel">Age</span>
+                        <span class="detail-value-info" id="profileUserAge">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label-info" data-i18n="careerGoal">Career Goal</span>
+                        <span class="detail-value-info" id="profileUserGoal">-</span>
+                    </div>
+                </div>
+                
+                <div class="profile-section" id="traitsSection" style="display: none;">
+                    <h2 data-i18n="personalityTraits">Personality Traits</h2>
+                    <div id="traitsContainer"></div>
+                </div>
+                
+                <a href="profile.html" class="connect-btn" data-i18n="findMore">Find More Similar People</a>
+            </div>
+            
+            <div id="error" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">😕</div>
+                <h2 data-i18n="userNotFound">User Not Found</h2>
+                <p data-i18n="userNotFoundDesc">This user profile could not be loaded.</p>
+                <a href="profile.html" class="connect-btn" style="margin-top: 2rem;" data-i18n="backToMyProfile">Back to Profile</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initUserProfile();
+        });
+        
+        async function initUserProfile() {
+            const viewingUserId = localStorage.getItem('viewing_user_id');
+            const viewingSimilarity = localStorage.getItem('viewing_similarity');
+            
+            if (!viewingUserId) {
+                showError();
+                return;
+            }
+            
+            await loadUserProfile(viewingUserId, viewingSimilarity);
+        }
+        
+        async function loadUserProfile(userEmail, similarity) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/personality/get/${encodeURIComponent(userEmail)}`);
+                if (response.ok) {
+                    const personality = await response.json();
+                    
+                    const userResponse = await fetch(`http://localhost:5000/api/auth/user/${encodeURIComponent(userEmail)}`);
+                    let userData = { email: userEmail };
+                    if (userResponse.ok) {
+                        userData = await userResponse.json();
+                    }
+                    
+                    displayUserProfile({
+                        user: userData,
+                        personality: personality,
+                        similarity: similarity ? parseFloat(similarity) : null
+                    });
+                } else {
+                    showError();
+                }
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+                showError();
+            }
+        }
+        
+        function displayUserProfile(data) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            
+            const name = data.user.name || data.user.email?.split('@')[0] || 'User';
+            document.getElementById('userAvatarLarge').textContent = name.charAt(0).toUpperCase();
+            document.getElementById('profileUserName').textContent = name;
+            document.getElementById('profileUserEmail').textContent = data.user.email || '';
+            document.getElementById('profileUserAge').textContent = data.user.age || 'Not set';
+            document.getElementById('profileUserGoal').textContent = data.user.goal || 'Not set';
+            
+            if (data.similarity !== undefined && data.similarity !== null) {
+                document.getElementById('similarityScore').textContent = Math.round(data.similarity) + '%';
+                document.querySelector('.similarity-display').style.display = 'inline-block';
+            } else {
+                document.querySelector('.similarity-display').style.display = 'none';
+            }
+            
+            if (data.personality) {
+                document.getElementById('traitsSection').style.display = 'block';
+                document.getElementById('personalityType').textContent = data.personality.personality_type || 'Balanced';
+                
+                const currentLang = localStorage.getItem('lang') || 'en';
+                const t = translations[currentLang];
+                
+                const traits = [
+                    { name: t.openness, value: data.personality.openness },
+                    { name: t.conscientiousness, value: data.personality.conscientiousness },
+                    { name: t.extraversion, value: data.personality.extraversion },
+                    { name: t.agreeableness, value: data.personality.agreeableness },
+                    { name: t.neuroticism, value: data.personality.neuroticism }
+                ];
+                
+                document.getElementById('traitsContainer').innerHTML = traits.map(trait => `
+                    <div class="trait-row">
+                        <div class="trait-header">
+                            <span class="trait-name">${trait.name}</span>
+                            <span class="trait-score">${trait.value}%</span>
+                        </div>
+                        <div class="trait-bar-bg">
+                            <div class="trait-bar" style="width: ${trait.value}%"></div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function showError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

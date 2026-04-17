@@ -1,0 +1,64 @@
+{
+  "careers": [
+    {
+      "name": "Software Engineer",
+      "description": "Design, develop, and maintain software applications",
+      "required_skills": ["Python", "JavaScript", "Data Structures", "Algorithms", "Git"],
+      "salary_range": "$70,000 - $150,000"
+    },
+    {
+      "name": "Data Scientist",
+      "description": "Analyze complex data sets to help make business decisions",
+      "required_skills": ["Python", "R", "Machine Learning", "Statistics", "SQL"],
+      "salary_range": "$85,000 - $160,000"
+    },
+    {
+      "name": "AI/ML Engineer",
+      "description": "Build and deploy machine learning models and AI systems",
+      "required_skills": ["Python", "TensorFlow", "PyTorch", "Deep Learning", "NLP"],
+      "salary_range": "$100,000 - $180,000"
+    },
+    {
+      "name": "UX Designer",
+      "description": "Create user-friendly interfaces and experiences",
+      "required_skills": ["Figma", "User Research", "Prototyping", "Visual Design", "Empathy"],
+      "salary_range": "$65,000 - $130,000"
+    },
+    {
+      "name": "Project Manager",
+      "description": "Lead and coordinate projects from conception to completion",
+      "required_skills": ["Agile", "Scrum", "Communication", "Risk Management", "Leadership"],
+      "salary_range": "$70,000 - $140,000"
+    },
+    {
+      "name": "Marketing Manager",
+      "description": "Develop and execute marketing strategies",
+      "required_skills": ["SEO", "Content Marketing", "Analytics", "Social Media", "Branding"],
+      "salary_range": "$60,000 - $120,000"
+    },
+    {
+      "name": "Cybersecurity Analyst",
+      "description": "Protect organizations from security threats",
+      "required_skills": ["Network Security", "Penetration Testing", "SIEM", "Compliance", "Incident Response"],
+      "salary_range": "$75,000 - $140,000"
+    },
+    {
+      "name": "Research Scientist",
+      "description": "Conduct research to advance scientific knowledge",
+      "required_skills": ["Research Methods", "Data Analysis", "Scientific Writing", "Statistics", "Lab Work"],
+      "salary_range": "$70,000 - $150,000"
+    },
+    {
+      "name": "Financial Analyst",
+      "description": "Analyze financial data to guide investment decisions",
+      "required_skills": ["Financial Modeling", "Excel", "Data Analysis", "Risk Assessment", "Accounting"],
+      "salary_range": "$60,000 - $120,000"
+    },
+    {
+      "name": "Teacher/Educator",
+      "description": "Educate and inspire students in various subjects",
+      "required_skills": ["Communication", "Curriculum Design", "Classroom Management", "Patience", "Adaptability"],
+      "salary_range": "$45,000 - $90,000"
+    }
+  ]
+}

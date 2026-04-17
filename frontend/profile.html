@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - PersonaAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-content {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+        
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .profile-header h1 {
+            font-size: 2.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-info-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .user-info-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .user-name-display {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-email-display {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .detail-card {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 1.25rem;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .detail-card:hover {
+            background: rgba(99, 102, 241, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .section-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .section-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .personality-type-display {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .personality-type-display h3 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .personality-type-display p {
+            color: var(--text-secondary);
+        }
+        
+        .trait-row {
+            margin-bottom: 1.25rem;
+        }
+        
+        .trait-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .trait-name {
+            font-weight: 600;
+        }
+        
+        .trait-score {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .trait-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        .trait-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .career-grid-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .career-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .career-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+        
+        .career-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .career-match-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .career-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .btn-action-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-action-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+        }
+        
+        .btn-action-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-action-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .btn-action-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 2px solid transparent;
+        }
+        
+        .btn-action-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
+        
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .logout-section {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .users-grid-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .user-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+        
+        .user-card-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+        
+        .user-card-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .user-card-goal {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .user-card-match {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .similarity-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+        
+        .similarity-bar-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+        
+        .view-profile-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .view-profile-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 1rem;
+            }
+            
+            .user-details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .career-grid-display {
+                grid-template-columns: 1fr;
+            }
+            
+            .users-grid-display {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+                    <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
+                </svg>
+                <span data-i18n="logo">PersonaAI</span>
+            </a>
+            
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="index.html#about" class="nav-link">About</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <div class="nav-user" id="navUserProfile">
+                        <a href="profile.html" class="nav-profile-link">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <span class="user-name" id="userName">User</span>
+                        </a>
+                        <a href="#" class="btn btn-outline btn-logout" onclick="handleLogout()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16,17 21,12 16,7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                        </a>
+                    </div>
+                    
+                    <button class="lang-toggle" onclick="toggleLanguage()">
+                        <span class="lang-en">EN</span>
+                        <span class="lang-separator">/</span>
+                        <span class="lang-ar">عربي</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1 data-i18n="myProfile">My Profile</h1>
+            </div>
+            
+            <div id="loading">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p data-i18n="loading">Loading profile...</p>
+                </div>
+            </div>
+            
+            <div id="content" style="display: none;">
+                <div class="user-info-card">
+                    <div class="user-name-display" id="userNameDisplay">Loading...</div>
+                    <div class="user-email-display" id="userEmailDisplay">...</div>
+                    <div class="user-details-grid">
+                        <div class="detail-card">
+                            <div class="detail-label" data-i18n="ageLabel">Age</div>
+                            <div class="detail-value" id="userAge">-</div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-label" data-i18n="careerGoal">Career Goal</div>
+                            <div class="detail-value" id="userGoal">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-card" id="personalitySection" style="display: none;">
+                    <h2 data-i18n="myTraits">My Personality Traits</h2>
+                    
+                    <div class="personality-type-display">
+                        <h3 id="personalityType">Loading...</h3>
+                        <p data-i18n="dominantType">Your dominant personality type</p>
+                    </div>
+                    
+                    <div id="traitsContainer"></div>
+                </div>
+                
+                <div class="section-card" id="careersSection" style="display: none;">
+                    <h2 data-i18n="myCareers">My Career Matches</h2>
+                    <div class="career-grid-display" id="careersContainer"></div>
+                </div>
+                
+                <div class="section-card" id="similarUsersSection" style="display: none;">
+                    <h2 data-i18n="similarUsers">People Like You</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="similarUsersDesc">Connect with people who share similar personality traits and goals</p>
+                    <div class="users-grid-display" id="similarUsersContainer"></div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="quiz-FIXED.html" class="action-btn btn-action-primary" data-i18n="retakeQuiz">Take Quiz Again</a>
+                    <a href="index.html" class="action-btn btn-action-secondary" data-i18n="home">Home</a>
+                </div>
+                
+                <div class="logout-section">
+                    <button onclick="logout()" class="action-btn btn-action-danger" data-i18n="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+        });
+        
+        async function loadProfile() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            if (user.name) {
+                userAvatar.textContent = user.name.charAt(0).toUpperCase();
+                userName.textContent = user.name.split(' ')[0];
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/personality/get/${user.email}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displayProfile({ user: user, personality: data });
+                    return;
+                }
+            } catch (error) {
+                console.log('Backend not available, using localStorage fallback');
+            }
+            
+            const traits = JSON.parse(localStorage.getItem('personality_traits'));
+            if (traits) {
+                displayLocalProfile(user, traits);
+            } else {
+                displayLocalProfile(user, null);
+            }
+        }
+        
+        function displayProfile(data) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            
+            document.getElementById('userNameDisplay').textContent = data.user.name || 'Anonymous';
+            document.getElementById('userEmailDisplay').textContent = data.user.email || '';
+            document.getElementById('userAge').textContent = data.user.age || 'Not set';
+            document.getElementById('userGoal').textContent = data.user.goal || 'Not set';
+            
+            if (data.personality) {
+                document.getElementById('personalitySection').style.display = 'block';
+                document.getElementById('personalityType').textContent = data.personality.personality_type || 'Balanced';
+                
+                const traits = [
+                    { name: 'Openness', value: data.personality.openness },
+                    { name: 'Conscientiousness', value: data.personality.conscientiousness },
+                    { name: 'Extraversion', value: data.personality.extraversion },
+                    { name: 'Agreeableness', value: data.personality.agreeableness },
+                    { name: 'Neuroticism', value: data.personality.neuroticism }
+                ];
+                
+                document.getElementById('traitsContainer').innerHTML = traits.map(trait => `
+                    <div class="trait-row">
+                        <div class="trait-header">
+                            <span class="trait-name">${trait.name}</span>
+                            <span class="trait-score">${trait.value}%</span>
+                        </div>
+                        <div class="trait-bar-bg">
+                            <div class="trait-bar" style="width: ${trait.value}%"></div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            if (data.recommendations && data.recommendations.length > 0) {
+                document.getElementById('careersSection').style.display = 'block';
+                document.getElementById('careersContainer').innerHTML = data.recommendations.map(career => `
+                    <div class="career-item">
+                        <div class="career-title">${career.name}</div>
+                        <span class="career-match-badge">${career.match_score}% Match</span>
+                        <p class="career-description">${career.description || 'Career recommendation based on your personality'}</p>
+                    </div>
+                `).join('');
+            }
+            
+            if (data.similar_users && data.similar_users.length > 0) {
+                displaySimilarUsers(data.similar_users);
+            } else {
+                const traits = JSON.parse(localStorage.getItem('personality_traits'));
+                if (traits) {
+                    loadSimilarUsersFromBackend(data.user);
+                }
+            }
+        }
+        
+        async function loadSimilarUsersFromBackend(userData) {
+            try {
+                const email = userData.email || userData._id;
+                console.log('Fetching similar users for:', email);
+                
+                const response = await fetch(`http://localhost:5000/api/recommendations/similar-users/${encodeURIComponent(email)}`);
+                console.log('Response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Similar users data:', data);
+                    
+                    if (data.similar_users && data.similar_users.length > 0) {
+                        displaySimilarUsers(data.similar_users);
+                    } else {
+                        const currentLang = localStorage.getItem('lang') || 'en';
+                        const t = translations[currentLang];
+                        document.getElementById('similarUsersContainer').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${t.noSimilarUsers || 'No similar users found yet. More users need to take the quiz!'}</p>`;
+                        document.getElementById('similarUsersSection').style.display = 'block';
+                    }
+                } else {
+                    const currentLang = localStorage.getItem('lang') || 'en';
+                    const t = translations[currentLang];
+                    document.getElementById('similarUsersContainer').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${t.noSimilarUsers || 'Could not load similar users.'}</p>`;
+                    document.getElementById('similarUsersSection').style.display = 'block';
+                }
+            } catch (error) {
+                console.log('Error loading similar users:', error);
+                const currentLang = localStorage.getItem('lang') || 'en';
+                const t = translations[currentLang];
+                document.getElementById('similarUsersContainer').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${t.noSimilarUsers || 'Error loading similar users.'}</p>`;
+                document.getElementById('similarUsersSection').style.display = 'block';
+            }
+        }
+        
+        function displaySimilarUsers(users) {
+            const currentLang = localStorage.getItem('lang') || 'en';
+            const t = translations[currentLang];
+            
+            document.getElementById('similarUsersSection').style.display = 'block';
+            document.getElementById('similarUsersContainer').innerHTML = users.map(user => `
+                <div class="user-card" onclick="viewUserProfile('${user.user_id}', ${user.similarity})">
+                    <div class="user-card-avatar">${(user.name || 'U').charAt(0).toUpperCase()}</div>
+                    <div class="user-card-name">${user.name || 'Anonymous'}</div>
+                    <div class="user-card-goal">${user.goal || 'No goal set'}</div>
+                    <span class="user-card-match">${Math.round(user.similarity)}% Similar</span>
+                    <div class="similarity-bar">
+                        <div class="similarity-bar-fill" style="width: ${Math.round(user.similarity)}%"></div>
+                    </div>
+                    <span class="view-profile-btn">${t.viewProfile || 'View Profile'} →</span>
+                </div>
+            `).join('');
+        }
+        
+        function viewUserProfile(userId, similarity) {
+            localStorage.setItem('viewing_user_id', userId);
+            localStorage.setItem('viewing_similarity', similarity);
+            window.location.href = 'user-profile.html';
+        }
+        
+        function displayLocalProfile(user, traits) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            
+            document.getElementById('userNameDisplay').textContent = user.name || 'Anonymous';
+            document.getElementById('userEmailDisplay').textContent = user.email || '';
+            document.getElementById('userAge').textContent = user.age || 'Not set';
+            document.getElementById('userGoal').textContent = user.goal || 'Not set';
+            
+            if (traits) {
+                document.getElementById('personalitySection').style.display = 'block';
+                
+                const types = [];
+                if (traits.openness > 60) types.push("Explorer");
+                if (traits.conscientiousness > 60) types.push("Achiever");
+                if (traits.extraversion > 60) types.push("Socializer");
+                if (traits.agreeableness > 60) types.push("Helper");
+                if (traits.neuroticism < 40) types.push("Stabilizer");
+                if (types.length === 0) types.push("Balanced");
+                
+                document.getElementById('personalityType').textContent = types.slice(0, 2).join(" & ");
+                
+                document.getElementById('traitsContainer').innerHTML = [
+                    { name: 'Openness', value: traits.openness },
+                    { name: 'Conscientiousness', value: traits.conscientiousness },
+                    { name: 'Extraversion', value: traits.extraversion },
+                    { name: 'Agreeableness', value: traits.agreeableness },
+                    { name: 'Neuroticism', value: traits.neuroticism }
+                ].map(trait => `
+                    <div class="trait-row">
+                        <div class="trait-header">
+                            <span class="trait-name">${trait.name}</span>
+                            <span class="trait-score">${trait.value}%</span>
+                        </div>
+                        <div class="trait-bar-bg">
+                            <div class="trait-bar" style="width: ${trait.value}%"></div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                loadSimilarUsersFromBackend(user);
+            }
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

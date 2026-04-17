@@ -1,0 +1,13 @@
+# Keep both requirements files separate
+# Main requirements.txt has all production dependencies
+
+# Additional development tools
+-r requirements.txt
+
+# Dev tools
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-flask>=1.2.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0

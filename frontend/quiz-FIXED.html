@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Test - PersonaAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-content {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+        
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 12px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: var(--gradient-primary);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .question-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .question-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        
+        .options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .option-btn {
+            width: 70px;
+            height: 70px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .option-btn:hover {
+            border-color: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .option-btn.selected {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        .quiz-nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+        
+        .quiz-btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .btn-prev {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-prev:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-next {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+        }
+        
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .completion {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .completion h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .completion p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .completion .btn {
+            padding: 1rem 2.5rem;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 3rem;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .completion .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+        }
+        
+        @media (max-width: 600px) {
+            .quiz-container {
+                padding: 1rem;
+            }
+            
+            .question-card {
+                padding: 1.5rem;
+            }
+            
+            .question-text {
+                font-size: 1.2rem;
+            }
+            
+            .option-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 1.2rem;
+            }
+            
+            .quiz-nav-buttons {
+                flex-direction: column;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+                    <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
+                </svg>
+                <span data-i18n="logo">PersonaAI</span>
+            </a>
+            
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="index.html#about" class="nav-link">About</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <div class="nav-user" id="navUserQuiz">
+                        <a href="profile.html" class="nav-profile-link">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <span class="user-name" id="userName">User</span>
+                        </a>
+                        <a href="#" class="btn btn-outline btn-logout" onclick="handleLogout()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16,17 21,12 16,7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                        </a>
+                    </div>
+                    
+                    <button class="lang-toggle" onclick="toggleLanguage()">
+                        <span class="lang-en">EN</span>
+                        <span class="lang-separator">/</span>
+                        <span class="lang-ar">عربي</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h1 data-i18n="quizTitle">Personality Test</h1>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="question-card" id="questionCard">
+                <div class="question-number" id="questionNumber">Question 1 / 50</div>
+                <div class="question-text" id="questionText">I enjoy trying new ideas.</div>
+                
+                <div class="options" id="optionsContainer">
+                    <button class="option-btn" data-value="1">1</button>
+                    <button class="option-btn" data-value="2">2</button>
+                    <button class="option-btn" data-value="3">3</button>
+                    <button class="option-btn" data-value="4">4</button>
+                    <button class="option-btn" data-value="5">5</button>
+                </div>
+            </div>
+            
+            <div class="quiz-nav-buttons">
+                <button class="quiz-btn btn-prev" id="prevBtn" data-i18n="quizPrev">Previous</button>
+                <button class="quiz-btn btn-next" id="nextBtn" data-i18n="quizNext">Next</button>
+            </div>
+            
+            <div class="status-bar">
+                <span id="answeredCount">Answered: 0 / 50</span>
+                <span id="scaleHint" data-i18n="quizInstructions">1 = Strongly Disagree, 5 = Strongly Agree</span>
+            </div>
+            
+            <div class="completion" id="completionCard" style="display: none;">
+                <h2 data-i18n="quizComplete">Test Complete!</h2>
+                <p data-i18n="quizCompleteDesc">You've answered all 50 questions!</p>
+                <button class="btn" onclick="goToResults()" data-i18n="quizViewResults">View My Results</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initQuizAuth();
+        });
+        
+        function initQuizAuth() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (!user.email) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            if (user.name) {
+                userAvatar.textContent = user.name.charAt(0).toUpperCase();
+                userName.textContent = user.name.split(' ')[0];
+            }
+        }
+        
+        let currentQuestion = 0;
+        let answers = new Array(50).fill(null);
+        
+        const questions = [
+            "I enjoy trying new ideas.",
+            "I like learning unfamiliar topics.",
+            "I have a broad imagination.",
+            "I enjoy art and creativity.",
+            "I always look for new ways to solve problems.",
+            "I appreciate beauty in nature and art.",
+            "I enjoy philosophical discussions.",
+            "I like to explore different cultures.",
+            "I am open to unusual ideas.",
+            "I enjoy daydreaming.",
+            "I plan my tasks in advance.",
+            "I meet deadlines.",
+            "I like organization.",
+            "I am a systematic person.",
+            "I pay attention to details.",
+            "I set goals and work towards them.",
+            "I am reliable and dependable.",
+            "I prefer structured routines.",
+            "I am self-disciplined.",
+            "I dislike procrastination.",
+            "I enjoy talking to people.",
+            "I feel energetic around others.",
+            "I like social gatherings.",
+            "I am outgoing and friendly.",
+            "I enjoy being the center of attention.",
+            "I start conversations easily.",
+            "I prefer working in teams.",
+            "I make friends easily.",
+            "I enjoy meeting new people.",
+            "I like adventure and excitement.",
+            "I like helping others.",
+            "I am trustful of others.",
+            "I am considerate and kind.",
+            "I am willing to compromise.",
+            "I care about others' well-being.",
+            "I am sympathetic and empathetic.",
+            "I believe the best in people.",
+            "I enjoy cooperating with others.",
+            "I am forgiving.",
+            "I value social harmony.",
+            "I feel anxious sometimes.",
+            "I worry about things.",
+            "I get upset easily.",
+            "I have frequent mood swings.",
+            "I feel sad or depressed sometimes.",
+            "I am emotionally unstable.",
+            "I tend to overthink.",
+            "I am sensitive to criticism.",
+            "I feel insecure at times.",
+            "I have difficulty relaxing."
+        ];
+        
+        const questionText = document.getElementById('questionText');
+        const questionNumber = document.getElementById('questionNumber');
+        const progressFill = document.getElementById('progressFill');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const answeredCount = document.getElementById('answeredCount');
+        const questionCard = document.getElementById('questionCard');
+        const completionCard = document.getElementById('completionCard');
+        
+        function init() {
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const value = parseInt(this.getAttribute('data-value'));
+                    selectAnswer(value);
+                });
+            });
+            
+            prevBtn.addEventListener('click', goToPrevious);
+            nextBtn.addEventListener('click', goToNext);
+            
+            updateQuestion();
+            updateStatus();
+        }
+        
+        function updateQuestion() {
+            const currentLang = localStorage.getItem('lang') || 'en';
+            const t = translations[currentLang];
+            
+            questionText.textContent = questions[currentQuestion];
+            questionNumber.textContent = `${t.quizProgress || 'Question'} ${currentQuestion + 1} ${t.quizOf || 'of'} ${questions.length}`;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressFill.style.width = `${progress}%`;
+            
+            prevBtn.style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+            
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.textContent = t.quizSubmit || 'Submit';
+            } else {
+                nextBtn.textContent = t.quizNext || 'Next';
+            }
+            
+            prevBtn.textContent = t.quizPrev || 'Previous';
+            
+            updateStatus();
+            updateOptionsDisplay();
+        }
+        
+        function updateOptionsDisplay() {
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                const value = parseInt(btn.getAttribute('data-value'));
+                if (answers[currentQuestion] === value) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+        
+        function selectAnswer(value) {
+            answers[currentQuestion] = value;
+            updateOptionsDisplay();
+            updateStatus();
+            
+            const optionBtns = optionsContainer.querySelectorAll('.option-btn');
+            optionBtns.forEach(btn => {
+                const btnValue = parseInt(btn.getAttribute('data-value'));
+                if (btnValue === value) {
+                    btn.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        btn.style.transform = btn.classList.contains('selected') ? 'scale(1.1)' : 'scale(1)';
+                    }, 150);
+                }
+            });
+        }
+        
+        function goToNext() {
+            if (answers[currentQuestion] === null) {
+                alert('Please select an answer before continuing!');
+                return;
+            }
+            
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                updateQuestion();
+            } else {
+                showCompletion();
+            }
+        }
+        
+        function goToPrevious() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                updateQuestion();
+            }
+        }
+        
+        function showCompletion() {
+            questionCard.style.display = 'none';
+            completionCard.style.display = 'block';
+            progressFill.style.width = '100%';
+            
+            localStorage.setItem('quiz_answers', JSON.stringify(answers));
+            localStorage.setItem('quiz_completed', 'true');
+        }
+        
+        async function goToResults() {
+            const traits = calculateTraits(answers);
+            localStorage.setItem('personality_traits', JSON.stringify(traits));
+            
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const quizData = {
+                email: user.email,
+                answers: answers,
+                traits: traits
+            };
+            
+            try {
+                await fetch('http://localhost:5000/api/personality/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(quizData)
+                });
+            } catch (error) {
+                console.log('Backend not available, using localStorage fallback');
+            }
+            
+            localStorage.setItem('quizCompleted', 'true');
+            window.location.href = 'results.html';
+        }
+        
+        function calculateTraits(answers) {
+            return {
+                openness: Math.round(answers.slice(0, 10).reduce((a, b) => a + b, 0) / 10 * 20),
+                conscientiousness: Math.round(answers.slice(10, 20).reduce((a, b) => a + b, 0) / 10 * 20),
+                extraversion: Math.round(answers.slice(20, 30).reduce((a, b) => a + b, 0) / 10 * 20),
+                agreeableness: Math.round(answers.slice(30, 40).reduce((a, b) => a + b, 0) / 10 * 20),
+                neuroticism: Math.round(answers.slice(40, 50).reduce((a, b) => a + b, 0) / 10 * 20)
+            };
+        }
+        
+        function updateStatus() {
+            const currentLang = localStorage.getItem('lang') || 'en';
+            const answered = answers.filter(a => a !== null).length;
+            answeredCount.textContent = `${translations[currentLang].answered || 'Answered'}: ${answered} / ${answers.length}`;
+        }
+        
+        init();
+    </script>
+</body>
+</html>
