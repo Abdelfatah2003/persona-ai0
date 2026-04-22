@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Test - PersonaAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .quiz-container { max-width: 700px; margin: 0 auto; padding: 2rem 1rem; }
+        .quiz-progress { display: flex; justify-content: space-between; margin-bottom: 2rem; }
+        .progress-bar { flex: 1; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; margin: 0 1rem; }
+        .progress-fill { height: 100%; background: var(--primary); transition: width 0.3s; }
+        .question-card { background: var(--card-bg); padding: 2rem; border-radius: 16px; margin-bottom: 1.5rem; }
+        .question-number { color: var(--primary); font-weight: 600; margin-bottom: 0.5rem; }
+        .question-text { font-size: 1.2rem; margin-bottom: 1.5rem; }
+        .options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .option-btn { flex: 1; min-width: 60px; padding: 1rem; border: 2px solid var(--border); background: var(--bg); border-radius: 12px; cursor: pointer; transition: all 0.3s; text-align: center; font-weight: 500; }
+        .option-btn:hover { border-color: var(--primary); }
+        .option-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        .option-label { font-size: 0.8rem; display: block; margin-top: 0.25rem; opacity: 0.8; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 2rem; }
+        .btn-nav { padding: 0.75rem 2rem; border-radius: 12px; cursor: pointer; font-weight: 600; }
+        .loading { text-align: center; padding: 3rem; }
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">PersonaAI</a>
+            <div class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="profile.html" class="nav-link">Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="quiz-container">
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading questions...</p>
+        </div>
+
+        <div id="quiz" style="display: none;">
+            <div class="quiz-progress">
+                <span>Question <span id="qNum">1</span> of <span id="qTotal">50</span></span>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 2%"></div></div>
+                <span><span id="percent">2</span>%</span>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Question <span id="questionNum">1</span></div>
+                <div class="question-text" id="questionText">Loading question...</div>
+                <div class="options" id="options"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-outline btn-nav" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                <button class="btn btn-primary btn-nav" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const questions = [
+            "I am always curious about new ideas and concepts",
+            "I enjoy trying new and different experiences",
+            "I have a vivid imagination and rich fantasy life",
+            "I prefer variety to routine",
+            "I am interested in art and beauty",
+            "I like to analyze problems thoroughly",
+            "I work hard to accomplish my goals",
+            "I keep my promises and commitments",
+            "I am well organized and methodical",
+            "I pay attention to details",
+            "I am always on the go, full of energy",
+            "I enjoy being around lots of people",
+            "I like to talk and socialize with others",
+            "I am enthusiastic and full of cheer",
+            "I make friends easily",
+            "I am considerate and helpful to others",
+            "I trust others and give them the benefit of the doubt",
+            "I am forgiving and willing to reconcile",
+            "I care about others and their feelings",
+            "I am easy-going and laid-back",
+            "I handle stress and pressure well",
+            "I stay calm under pressure",
+            "I am emotionally stable and secure",
+            "I rarely feel anxious or worried",
+            "I am comfortable with myself and who I am",
+            "I enjoy learning new things",
+            "I am open to unusual ideas",
+            "I like creative expression",
+            "I appreciate nature and outdoor activities",
+            "I am intellectually curious",
+            "I set high standards for myself",
+            "I am disciplined and focused",
+            "I plan ahead and stick to plans",
+            "I am persistent in achieving my goals",
+            "I prefer following a routine",
+            "I am energetic and active",
+            "I enjoy social gatherings and parties",
+            "I am talkative and expressive",
+            "I love excitement and new adventures",
+            "I am optimistic and positive",
+            "I am cooperative and team-oriented",
+            "I am generous and charitable",
+            "I value harmony and peace",
+            "I am patient with others",
+            "I try to see the best in people",
+            "I do not worry about things I cannot change",
+            "I accept people as they are",
+            "I am confident in my abilities",
+            "I handle criticism well",
+            "I bounce back from setbacks quickly"
+        ];
+
+        let answers = new Array(50).fill(0);
+        let currentQuestion = 0;
+
+        function loadQuiz() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('qTotal').textContent = questions.length;
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            currentQuestion = index;
+            document.getElementById('questionNum').textContent = index + 1;
+            document.getElementById('qNum').textContent = index + 1;
+            document.getElementById('questionText').textContent = questions[index];
+            document.getElementById('percent').textContent = Math.round(((index + 1) / questions.length) * 100);
+            document.getElementById('progressFill').style.width = ((index + 1) / questions.length * 100) + '%';
+
+            const optionsHtml = [1,2,3,4,5].map(val => `
+                <button class="option-btn ${answers[index] === val ? 'selected' : ''}" onclick="selectOption(${val})">
+                    ${val}
+                    <span class="option-label">${val === 1 ? 'Disagree' : val === 5 ? 'Agree' : 'Neutral'}</span>
+                </button>
+            `).join('');
+            document.getElementById('options').innerHTML = optionsHtml;
+
+            document.getElementById('prevBtn').style.visibility = index === 0 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').textContent = index === questions.length - 1 ? 'Submit' : 'Next';
+        }
+
+        function selectOption(val) {
+            answers[currentQuestion] = val;
+            showQuestion(currentQuestion);
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) showQuestion(currentQuestion - 1);
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            } else {
+                submitQuiz();
+            }
+        }
+
+        async function submitQuiz() {
+            if (answers.includes(0)) {
+                alert('Please answer all questions!');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').innerHTML = '<div class="spinner"></div><p>Analyzing your personality...</p>';
+            document.getElementById('quiz').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/personality/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ answers })
+                });
+                const data = await response.json();
+                
+                localStorage.setItem('personality_traits', JSON.stringify(data.traits));
+                localStorage.setItem('quizCompleted', 'true');
+                
+                window.location.href = 'results.html';
+            } catch (e) {
+                alert('Error submitting quiz. Please try again.');
+                loadQuiz();
+            }
+        }
+
+        setTimeout(loadQuiz, 500);
+    </script>
+</body>
+</html>
