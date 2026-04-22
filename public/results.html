@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Results - PersonaAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-content {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+        
+        .results-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .results-header h1 {
+            font-size: 2.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .results-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .section-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .section-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .welcome-card {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .welcome-card h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .welcome-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .personality-type-display {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .personality-type-display h3 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .personality-type-display p {
+            color: var(--text-secondary);
+        }
+        
+        .trait-row {
+            margin-bottom: 1.25rem;
+        }
+        
+        .trait-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .trait-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .trait-score {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .trait-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        .trait-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .career-grid-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .career-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .career-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+        
+        .career-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .career-match-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .career-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .skill-tag {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .understand-card {
+            padding: 2rem;
+        }
+        
+        .understand-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        
+        .understand-card .trait-desc {
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .no-results h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .no-results p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .btn-action-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-action-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+        }
+        
+        .btn-action-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-action-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .results-container {
+                padding: 1rem;
+            }
+            
+            .career-grid-results {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+                    <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
+                </svg>
+                <span data-i18n="logo">PersonaAI</span>
+            </a>
+            
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="index.html#about" class="nav-link">About</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <div class="nav-user" id="navUserResults">
+                        <a href="profile.html" class="nav-profile-link">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <span class="user-name" id="userName">User</span>
+                        </a>
+                        <a href="#" class="btn btn-outline btn-logout" onclick="handleLogout()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16,17 21,12 16,7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                        </a>
+                    </div>
+                    
+                    <button class="lang-toggle" onclick="toggleLanguage()">
+                        <span class="lang-en">EN</span>
+                        <span class="lang-separator">/</span>
+                        <span class="lang-ar">عربي</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="results-container">
+            <div class="results-header">
+                <h1 data-i18n="resultsTitle">Your Personality Profile</h1>
+                <p data-i18n="bigFive">Based on the Big Five Personality Model</p>
+            </div>
+            
+            <div id="resultsContent"></div>
+            
+            <div class="action-buttons">
+                <a href="quiz-FIXED.html" class="action-btn btn-action-secondary" data-i18n="retakeQuiz">Retake Quiz</a>
+                <a href="index.html" class="action-btn btn-action-primary" data-i18n="exploreMore">Explore More</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initResultsAuth();
+            loadResults();
+        });
+        
+        function initResultsAuth() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (!user.email) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            if (user.name) {
+                userAvatar.textContent = user.name.charAt(0).toUpperCase();
+                userName.textContent = user.name.split(' ')[0];
+            }
+        }
+        
+        const careers = [
+            {
+                name: "Software Engineer",
+                traits: { openness: 60, conscientiousness: 70, extraversion: 40 },
+                skills: ["Python", "JavaScript", "Problem Solving"],
+                description: "Design and build software solutions"
+            },
+            {
+                name: "Data Scientist",
+                traits: { openness: 70, conscientiousness: 60, extraversion: 35 },
+                skills: ["Python", "Statistics", "Machine Learning"],
+                description: "Analyze data to find patterns and insights"
+            },
+            {
+                name: "AI/ML Engineer",
+                traits: { openness: 80, conscientiousness: 65, extraversion: 30 },
+                skills: ["Python", "TensorFlow", "Deep Learning"],
+                description: "Build intelligent systems and AI models"
+            },
+            {
+                name: "UX Designer",
+                traits: { openness: 80, conscientiousness: 50, extraversion: 55 },
+                skills: ["Figma", "User Research", "Prototyping"],
+                description: "Create user-friendly digital experiences"
+            },
+            {
+                name: "Project Manager",
+                traits: { conscientiousness: 80, extraversion: 60, agreeableness: 65 },
+                skills: ["Leadership", "Communication", "Organization"],
+                description: "Lead teams and manage projects"
+            },
+            {
+                name: "Marketing Manager",
+                traits: { extraversion: 75, openness: 60, agreeableness: 55 },
+                skills: ["Communication", "Analytics", "Creativity"],
+                description: "Develop marketing strategies and campaigns"
+            }
+        ];
+        
+        function loadResults() {
+            const answers = JSON.parse(localStorage.getItem('quiz_answers'));
+            const completed = localStorage.getItem('quiz_completed');
+            
+            if (!answers || !completed) {
+                showNoResults();
+                return;
+            }
+            
+            const traits = calculateTraits(answers);
+            displayResults(traits);
+        }
+        
+        function calculateTraits(answers) {
+            return {
+                openness: Math.round(answers.slice(0, 10).reduce((a, b) => a + b, 0) / 10 * 20),
+                conscientiousness: Math.round(answers.slice(10, 20).reduce((a, b) => a + b, 0) / 10 * 20),
+                extraversion: Math.round(answers.slice(20, 30).reduce((a, b) => a + b, 0) / 10 * 20),
+                agreeableness: Math.round(answers.slice(30, 40).reduce((a, b) => a + b, 0) / 10 * 20),
+                neuroticism: Math.round(answers.slice(40, 50).reduce((a, b) => a + b, 0) / 10 * 20)
+            };
+        }
+        
+        function getPersonalityType(traits) {
+            const types = [];
+            
+            if (traits.openness > 60) types.push("Explorer");
+            if (traits.conscientiousness > 60) types.push("Achiever");
+            if (traits.extraversion > 60) types.push("Socializer");
+            if (traits.agreeableness > 60) types.push("Helper");
+            if (traits.neuroticism < 40) types.push("Stabilizer");
+            
+            if (types.length === 0) types.push("Balanced");
+            
+            return types.slice(0, 2).join(" & ");
+        }
+        
+        function matchCareers(traits) {
+            return careers.map(career => {
+                let score = 0;
+                let total = 0;
+                
+                for (let trait in career.traits) {
+                    const diff = Math.abs(traits[trait] - career.traits[trait]);
+                    score += (100 - diff);
+                    total += 100;
+                }
+                
+                const matchScore = Math.round((score / total) * 100);
+                
+                return { ...career, matchScore };
+            }).sort((a, b) => b.matchScore - a.matchScore).slice(0, 4);
+        }
+        
+        function displayResults(traits) {
+            const currentLang = localStorage.getItem('lang') || 'en';
+            const t = translations[currentLang];
+            const personalityType = getPersonalityType(traits);
+            const matchedCareers = matchCareers(traits);
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const firstName = user.name ? user.name.split(' ')[0] : '';
+            
+            const html = `
+                <div class="section-card welcome-card">
+                    <h2>${t.welcome}${firstName ? ', ' + firstName : ''}!</h2>
+                    <p>${t.analysisComplete || t.viewResults}</p>
+                    <a href="profile.html" class="action-btn btn-action-primary" style="display: inline-block; text-decoration: none;">
+                        ${t.viewProfile || t.viewResults} →
+                    </a>
+                </div>
+                
+                <div class="section-card">
+                    <h2>${t.yourTraits || t.myTraits}</h2>
+                    
+                    <div class="personality-type-display">
+                        <h3>${personalityType}</h3>
+                        <p>${t.yourDominant || t.dominantType}</p>
+                    </div>
+                    
+                    ${displayTrait(traits.openness, t.openness, t.opennessDesc)}
+                    ${displayTrait(traits.conscientiousness, t.conscientiousness, t.conscientiousnessDesc)}
+                    ${displayTrait(traits.extraversion, t.extraversion, t.extraversionDesc)}
+                    ${displayTrait(traits.agreeableness, t.agreeableness, t.agreeablenessDesc)}
+                    ${displayTrait(traits.neuroticism, t.neuroticism, t.neuroticismDesc)}
+                </div>
+                
+                <div class="section-card">
+                    <h2>${t.careerRecommendations || t.myCareers}</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">${t.basedOnTraits}</p>
+                    
+                    <div class="career-grid-results">
+                        ${matchedCareers.map(career => `
+                            <div class="career-item">
+                                <div class="career-title">${career.name}</div>
+                                <span class="career-match-badge">${career.matchScore}% Match</span>
+                                <p class="career-description">${career.description}</p>
+                                <div class="skills-container">
+                                    ${career.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="section-card understand-card">
+                    <h2>${t.understandingTraits}</h2>
+                    <p class="trait-desc">${t.opennessDesc}</p>
+                    <p class="trait-desc">${t.conscientiousnessDesc}</p>
+                    <p class="trait-desc">${t.extraversionDesc}</p>
+                    <p class="trait-desc">${t.agreeablenessDesc}</p>
+                    <p class="trait-desc">${t.neuroticismDesc}</p>
+                </div>
+            `;
+            
+            document.getElementById('resultsContent').innerHTML = html;
+        }
+        
+        function displayTrait(value, name, desc) {
+            return `
+                <div class="trait-row">
+                    <div class="trait-header">
+                        <span class="trait-name">${name}</span>
+                        <span class="trait-score">${value}%</span>
+                    </div>
+                    <div class="trait-bar-bg">
+                        <div class="trait-bar" style="width: ${value}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showNoResults() {
+            const currentLang = localStorage.getItem('lang') || 'en';
+            const t = translations[currentLang];
+            
+            document.getElementById('resultsContent').innerHTML = `
+                <div class="section-card no-results">
+                    <h2>${t.noResults}</h2>
+                    <p>You haven't completed the personality quiz yet.</p>
+                    <a href="quiz-FIXED.html" class="action-btn btn-action-primary">
+                        ${t.takeQuiz} →
+                    </a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

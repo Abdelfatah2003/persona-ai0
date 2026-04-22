@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">AI Personality & Career Advisor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+                    <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
+                </svg>
+                <span data-i18n="logo">PersonaAI</span>
+            </a>
+            
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link active" data-i18n="navHome">Home</a></li>
+                    <li><a href="#about" class="nav-link" data-i18n="navAbout">About</a></li>
+                    <li><a href="#features" class="nav-link" data-i18n="navFeatures">Features</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <div class="nav-auth" id="navAuth">
+                        <a href="login.html" class="btn btn-outline" data-i18n="login">Login</a>
+                        <a href="login.html#register" class="btn btn-primary" data-i18n="register">Register</a>
+                    </div>
+                    
+                    <div class="nav-user" id="navUser" style="display: none;">
+                        <a href="profile.html" class="nav-profile-link">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <span class="user-name" id="userName">User</span>
+                        </a>
+                        <a href="#" class="btn btn-outline btn-logout" onclick="handleLogout()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16,17 21,12 16,7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                        </a>
+                    </div>
+                    
+                    <button class="lang-toggle" onclick="toggleLanguage()">
+                        <span class="lang-en">EN</span>
+                        <span class="lang-separator">/</span>
+                        <span class="lang-ar">عربي</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1 class="hero-title" data-i18n="heroTitle">Discover Your True Potential</h1>
+            <p class="hero-subtitle" data-i18n="heroSubtitle">Unlock career paths and connections that match your unique personality</p>
+            <a href="#" class="btn btn-primary" onclick="handleStartTest()" data-i18n="startTest">Start Personality Test</a>
+        </div>
+    </header>
+
+    <section class="features" id="features">
+        <div class="features-container">
+            <h2 class="section-title" data-i18n="howItWorks">How It Works</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="5"/>
+                            <path d="M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"/>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="feature1Title">Analyze Personality</h3>
+                    <p data-i18n="feature1Desc">Answer questions or write about yourself. Our AI analyzes your Big Five personality traits.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="feature2Title">Find Career Path</h3>
+                    <p data-i18n="feature2Desc">Get personalized career recommendations based on your personality and interests.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h3 data-i18n="feature3Title">Connect with Others</h3>
+                    <p data-i18n="feature3Desc">Find like-minded people who share your goals and interests for collaboration.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-container">
+            <div class="about-content">
+                <h2 data-i18n="aboutTitle">Powered by Advanced AI</h2>
+                <p data-i18n="aboutDesc">Using Natural Language Processing and the Big Five Personality Model, we analyze your text to extract meaningful insights about who you are and what career paths suit you best.</p>
+                <div class="trait-list">
+                    <span class="trait-badge">Openness</span>
+                    <span class="trait-badge">Conscientiousness</span>
+                    <span class="trait-badge">Extraversion</span>
+                    <span class="trait-badge">Agreeableness</span>
+                    <span class="trait-badge">Neuroticism</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="careers-preview" id="careers">
+        <div class="careers-container">
+            <h2 class="section-title" data-i18n="exploreCareers">Explore Career Paths</h2>
+            <div class="careers-grid">
+                <div class="career-preview-card">
+                    <div class="career-icon">💻</div>
+                    <h3>Software Engineer</h3>
+                    <p>Build the future with code</p>
+                </div>
+                <div class="career-preview-card">
+                    <div class="career-icon">📊</div>
+                    <h3>Data Scientist</h3>
+                    <p>Turn data into insights</p>
+                </div>
+                <div class="career-preview-card">
+                    <div class="career-icon">🤖</div>
+                    <h3>AI/ML Engineer</h3>
+                    <p>Create intelligent systems</p>
+                </div>
+                <div class="career-preview-card">
+                    <div class="career-icon">🎨</div>
+                    <h3>UX Designer</h3>
+                    <p>Design user experiences</p>
+                </div>
+            </div>
+            <div class="careers-cta">
+                <a href="#" class="btn btn-primary" onclick="handleStartTest()" data-i18n="discoverCareer">Discover Your Career</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p data-i18n="footer">AI Personality & Career Recommendation System</p>
+    </footer>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

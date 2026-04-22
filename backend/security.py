@@ -124,6 +124,8 @@ def token_required(f):
 def rate_limit(limit="10 per minute"):
     """Decorator to apply specific rate limit"""
     def decorator(f):
+        if security_manager.rate_limiter is None:
+            return f
         return security_manager.rate_limiter.limit(limit)(f)
     return decorator
 

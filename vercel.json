@@ -1,17 +1,26 @@
 {
-  "framework": "flask",
-  "buildCommand": "pip install -r requirements.txt",
-  "outputDirectory": "public",
-  "installCommand": "pip install -r requirements.txt",
-  "devCommand": "python app.py",
-  "regions": ["fra1"],
-  "functions": {
-    "api/**/*.py": {
-      "runtime": "python3.11"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.12"
+      }
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
-  },
-  "env": {
-    "FLASK_ENV": "production",
-    "FLASK_DEBUG": "0"
-  }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
+    }
+  ]
 }

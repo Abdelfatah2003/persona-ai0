@@ -8,10 +8,9 @@ _db = None
 def get_client():
     global _client
     if _client is None:
-        try:
-            mongo_uri = current_app.config.get('MONGO_URI', 'mongodb://localhost:27017/')
-        except RuntimeError:
-            mongo_uri = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
+        mongo_uri = os.environ.get('MONGO_URI')
+        if not mongo_uri:
+            mongo_uri = 'mongodb+srv://abodzxsh777_db_user:Abod123456@cluster0.y4unpuc.mongodb.net/personaai?retryWrites=true&w=majority'
         _client = MongoClient(mongo_uri)
     return _client
 
