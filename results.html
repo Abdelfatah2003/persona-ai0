@@ -412,8 +412,8 @@
         ];
         
         function loadResults() {
-            const answers = JSON.parse(localStorage.getItem('quiz_answers'));
-            const completed = localStorage.getItem('quiz_completed');
+            const answers = JSON.parse(localStorage.getItem('answers') || localStorage.getItem('quiz_answers'));
+            const completed = localStorage.getItem('quizCompleted') || localStorage.getItem('quiz_completed');
             
             if (!answers || !completed) {
                 showNoResults();
@@ -421,6 +421,8 @@
             }
             
             const traits = calculateTraits(answers);
+            localStorage.setItem('personality_traits', JSON.stringify(traits));
+            localStorage.setItem('quizCompleted', 'true');
             displayResults(traits);
         }
         
