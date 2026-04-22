@@ -332,17 +332,12 @@
             const user = JSON.parse(localStorage.getItem('user') || '{}');
             if (user && user.email) {
                 try {
-                    const response = await fetch(`http://localhost:5000/api/personality/get/${encodeURIComponent(user.email)}`);
+                    const response = await fetch(`/api/personality/get/${encodeURIComponent(user.email)}`);
                     if (response.ok) {
                         const data = await response.json();
-                        if (data.openness !== undefined) {
-                            localStorage.setItem('personality_traits', JSON.stringify({
-                                openness: data.openness,
-                                conscientiousness: data.conscientiousness,
-                                extraversion: data.extraversion,
-                                agreeableness: data.agreeableness,
-                                neuroticism: data.neuroticism
-                            }));
+                        if (data.success && data.personality && data.personality.traits) {
+                            const traits = data.personality.traits;
+                            localStorage.setItem('personality_traits', JSON.stringify(traits));
                             window.location.href = 'profile.html';
                             return;
                         }

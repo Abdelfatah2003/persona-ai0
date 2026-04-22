@@ -29,7 +29,7 @@ async function handleLogin(event) {
     };
     
     try {
-        const response = await fetch('http://localhost:5000/api/auth/login', {
+        const response = await fetch('/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
@@ -41,18 +41,13 @@ async function handleLogin(event) {
             localStorage.removeItem('quizCompleted');
             
             // Check if user has already taken the quiz by checking backend
-            const personalityResponse = await fetch(`http://localhost:5000/api/personality/get/${encodeURIComponent(email)}`);
+            const personalityResponse = await fetch(`/api/personality/get/${encodeURIComponent(email)}`);
             if (personalityResponse.ok) {
                 const personalityData = await personalityResponse.json();
-                if (personalityData.openness !== undefined) {
+                if (personalityData.success && personalityData.personality && personalityData.personality.traits) {
                     // User has completed quiz before - go to profile
-                    localStorage.setItem('personality_traits', JSON.stringify({
-                        openness: personalityData.openness,
-                        conscientiousness: personalityData.conscientiousness,
-                        extraversion: personalityData.extraversion,
-                        agreeableness: personalityData.agreeableness,
-                        neuroticism: personalityData.neuroticism
-                    }));
+                    const traits = personalityData.personality.traits;
+                    localStorage.setItem('personality_traits', JSON.stringify(traits));
                     window.location.href = 'profile.html';
                 } else {
                     window.location.href = 'quiz-FIXED.html';
@@ -89,7 +84,7 @@ async function handleRegister(event) {
     };
     
     try {
-        const response = await fetch('http://localhost:5000/api/auth/register', {
+        const response = await fetch('/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)

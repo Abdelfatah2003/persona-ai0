@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (user && user.email) {
         try {
-            const saveResponse = await fetch('http://localhost:5000/api/personality/save', {
+            const saveResponse = await fetch('/api/personality/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -156,13 +156,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     const [careerResult, similarResult] = await Promise.all([
-        fetch('http://localhost:5000/api/recommendations/careers', {
+        fetch('/api/recommendations/careers', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(savedTraits)
         }).then(res => res.json()).catch(() => ({ careers: null })),
         user && user.email ? 
-            fetch(`http://localhost:5000/api/recommendations/similar-users/${encodeURIComponent(user.email)}`)
+            fetch(`/api/recommendations/users/${encodeURIComponent(user.email)}`)
                 .then(res => {
                     if (!res.ok) throw new Error('Failed to fetch similar users');
                     return res.json();

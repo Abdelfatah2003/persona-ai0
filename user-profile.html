@@ -365,19 +365,23 @@
         
         async function loadUserProfile(userEmail, similarity) {
             try {
-                const response = await fetch(`http://localhost:5000/api/personality/get/${encodeURIComponent(userEmail)}`);
+                const response = await fetch(`/api/personality/get/${encodeURIComponent(userEmail)}`);
                 if (response.ok) {
-                    const personality = await response.json();
+                    const data = await response.json();
+                    const personality = data.success && data.personality ? data.personality : { traits: {} };
                     
-                    const userResponse = await fetch(`http://localhost:5000/api/auth/user/${encodeURIComponent(userEmail)}`);
+                    const userResponse = await fetch(`/api/auth/user/${encodeURIComponent(userEmail)}`);
                     let userData = { email: userEmail };
                     if (userResponse.ok) {
-                        userData = await userResponse.json();
+                        const userRes = await userResponse.json();
+                        if (userRes.success && userRes.user) {
+                            userData = userRes.user;
+                        }
                     }
                     
                     displayUserProfile({
                         user: userData,
-                        personality: personality,
+                        personality: personality.traits || {},
                         similarity: similarity ? parseFloat(similarity) : null
                     });
                 } else {
