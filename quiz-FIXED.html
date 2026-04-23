@@ -67,6 +67,7 @@
         </div>
     </div>
 
+    <script src="js/api-client.js"></script>
     <script src="js/api.js"></script>
     <script>
         const questions = [
@@ -180,20 +181,31 @@
             document.getElementById('quiz').style.display = 'none';
 
             try {
-                const response = await fetch('/api/personality/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ answers })
-                });
-                const data = await response.json();
+                const data = await api.analyze({ answers });
+                const traits = data.traits;
                 
-                localStorage.setItem('personality_traits', JSON.stringify(data.traits));
+                localStorage.setItem('personality_traits', JSON.stringify(traits));
+                localStorage.setItem('answers', JSON.stringify(answers));
                 localStorage.setItem('quizCompleted', 'true');
+                
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user && user.email) {
+                    await api.savePersonality({ email: user.email, traits });
+                }
                 
                 window.location.href = 'results.html';
             } catch (e) {
-                alert('Error submitting quiz. Please try again.');
-                loadQuiz();
+                const traits = {
+                    openness: answers.slice(0, 10).reduce((a, b) => a + b, 0) / 10 * 20,
+                    conscientiousness: answers.slice(10, 20).reduce((a, b) => a + b, 0) / 10 * 20,
+                    extraversion: answers.slice(20, 30).reduce((a, b) => a + b, 0) / 10 * 20,
+                    agreeableness: answers.slice(30, 40).reduce((a, b) => a + b, 0) / 10 * 20,
+                    neuroticism: answers.slice(40, 50).reduce((a, b) => a + b, 0) / 10 * 20
+                };
+                localStorage.setItem('personality_traits', JSON.stringify(traits));
+                localStorage.setItem('answers', JSON.stringify(answers));
+                localStorage.setItem('quizCompleted', 'true');
+                window.location.href = 'results.html';
             }
         }
 

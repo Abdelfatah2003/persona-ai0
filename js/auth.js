@@ -23,35 +23,17 @@ async function handleLogin(event) {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
-    const user = {
-        email: email,
-        password: password
-    };
-    
     try {
-        const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
-        });
+        const data = await api.login({ email, password });
         
-        if (response.ok) {
-            const data = await response.json();
+        if (data.success) {
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.removeItem('quizCompleted');
             
-            // Check if user has already taken the quiz by checking backend
-            const personalityResponse = await fetch(`/api/personality/get/${encodeURIComponent(email)}`);
-            if (personalityResponse.ok) {
-                const personalityData = await personalityResponse.json();
-                if (personalityData.success && personalityData.personality && personalityData.personality.traits) {
-                    // User has completed quiz before - go to profile
-                    const traits = personalityData.personality.traits;
-                    localStorage.setItem('personality_traits', JSON.stringify(traits));
-                    window.location.href = 'profile.html';
-                } else {
-                    window.location.href = 'quiz-FIXED.html';
-                }
+            const persData = await api.getPersonality(email);
+            if (persData && persData.success && persData.personality && persData.personality.traits) {
+                localStorage.setItem('personality_traits', JSON.stringify(persData.personality.traits));
+                window.location.href = 'profile.html';
             } else {
                 window.location.href = 'quiz-FIXED.html';
             }
@@ -75,33 +57,24 @@ async function handleRegister(event) {
     const goal = document.getElementById('goal').value;
     const password = document.getElementById('registerPassword').value;
     
-    const user = {
-        name: `${firstName} ${lastName}`,
-        email: email,
-        age: parseInt(age),
-        goal: goal,
-        password: password
-    };
-    
     try {
-        const response = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
+        const data = await api.register({
+            name: `${firstName} ${lastName}`,
+            email,
+            age: parseInt(age),
+            goal,
+            password
         });
         
-        if (response.ok) {
-            const data = await response.json();
+        if (data.success) {
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.removeItem('quizCompleted');
-            
-            // New users should take the quiz
             window.location.href = 'quiz-FIXED.html';
         } else {
-            alert('Registration failed');
+            alert(data.error || 'Registration failed');
         }
     } catch (error) {
-        localStorage.setItem('user', JSON.stringify({ name: `${firstName} ${lastName}`, email: email, goal: goal }));
+        localStorage.setItem('user', JSON.stringify({ name: `${firstName} ${lastName}`, email, goal }));
         localStorage.removeItem('quizCompleted');
         window.location.href = 'quiz-FIXED.html';
     }

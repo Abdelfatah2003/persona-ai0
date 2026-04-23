@@ -537,6 +537,7 @@
         </div>
     </div>
     
+    <script src="js/api-client.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
     <script>
@@ -560,25 +561,22 @@
             }
             
             try {
-                const response = await fetch(`/api/personality/get/${user.email}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success && data.personality && data.personality.traits) {
-                        const pers = data.personality;
-                        displayProfile({ 
-                            user: user, 
-                            personality: { 
-                                ...pers.traits,
-                                personality_type: pers.personality_type 
-                            } 
-                        });
-                    } else {
-                        displayLocalProfile(user, null);
-                    }
-                    return;
+                const data = await api.getPersonality(user.email);
+                if (data && data.success && data.personality && data.personality.traits) {
+                    const pers = data.personality;
+                    displayProfile({ 
+                        user: user, 
+                        personality: { 
+                            ...pers.traits,
+                            personality_type: pers.personality_type 
+                        } 
+                    });
+                } else {
+                    displayLocalProfile(user, null);
                 }
+                return;
             } catch (error) {
-                console.log('Backend not available, using localStorage fallback');
+                console.log('API error, using localStorage fallback');
             }
             
             const traits = JSON.parse(localStorage.getItem('personality_traits'));
@@ -644,37 +642,24 @@
             }
         }
         
-        async function loadSimilarUsersFromBackend(userData) {
+async function loadSimilarUsersFromBackend(userData) {
             try {
                 const email = userData.email || userData._id;
-                console.log('Fetching similar users for:', email);
+                const data = await api.getSimilarUsers(email);
                 
-                const response = await fetch(`/api/recommendations/users/${encodeURIComponent(email)}`);
-                console.log('Response status:', response.status);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('Similar users data:', data);
-                    
-                    if (data.similar_users && data.similar_users.length > 0) {
-                        displaySimilarUsers(data.similar_users);
-                    } else {
-                        const currentLang = localStorage.getItem('lang') || 'en';
-                        const t = translations[currentLang];
-                        document.getElementById('similarUsersContainer').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${t.noSimilarUsers || 'No similar users found yet. More users need to take the quiz!'}</p>`;
-                        document.getElementById('similarUsersSection').style.display = 'block';
-                    }
+                if (data && data.success && data.similar_users && data.similar_users.length > 0) {
+                    displaySimilarUsers(data.similar_users);
                 } else {
                     const currentLang = localStorage.getItem('lang') || 'en';
                     const t = translations[currentLang];
-                    document.getElementById('similarUsersContainer').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${t.noSimilarUsers || 'Could not load similar users.'}</p>`;
+                    document.getElementById('similarUsersContainer').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${t.noSimilarUsers || 'No similar users found yet.'}</p>`;
                     document.getElementById('similarUsersSection').style.display = 'block';
                 }
             } catch (error) {
                 console.log('Error loading similar users:', error);
                 const currentLang = localStorage.getItem('lang') || 'en';
                 const t = translations[currentLang];
-                document.getElementById('similarUsersContainer').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${t.noSimilarUsers || 'Error loading similar users.'}</p>`;
+                document.getElementById('similarUsersContainer').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${t.noSimilarUsers || 'Could not load.'}</p>`;
                 document.getElementById('similarUsersSection').style.display = 'block';
             }
         }

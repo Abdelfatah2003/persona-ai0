@@ -344,6 +344,7 @@
         </div>
     </div>
     
+    <script src="js/api-client.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
     <script>
@@ -351,7 +352,7 @@
             initUserProfile();
         });
         
-        async function initUserProfile() {
+async function initUserProfile() {
             const params = new URLSearchParams(window.location.search);
             let viewingUserEmail = params.get('email');
             let viewingSimilarity = params.get('similarity');
@@ -360,6 +361,32 @@
                 viewingUserEmail = localStorage.getItem('viewing_user_id');
                 viewingSimilarity = localStorage.getItem('viewing_similarity');
             }
+            
+            if (!viewingUserEmail) {
+                showError();
+                return;
+            }
+            
+            await loadUserProfile(viewingUserEmail, viewingSimilarity);
+        }
+        
+        async function loadUserProfile(userEmail, similarity) {
+            try {
+                const data = await api.getPersonality(userEmail);
+                const personality = data && data.success && data.personality ? data.personality : { traits: {} };
+                
+                const userData = await api.getUser(userEmail);
+                const userInfo = userData && userData.success && userData.user ? userData.user : { email: userEmail };
+                
+                displayUserProfile({
+                    user: userInfo,
+                    personality: personality.traits || {},
+                    similarity: similarity ? parseFloat(similarity) : null
+                });
+            } catch (error) {
+                showError();
+            }
+        }
             
             if (!viewingUserEmail) {
                 showError();
