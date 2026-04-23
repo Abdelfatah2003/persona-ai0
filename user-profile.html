@@ -352,15 +352,21 @@
         });
         
         async function initUserProfile() {
-            const viewingUserId = localStorage.getItem('viewing_user_id');
-            const viewingSimilarity = localStorage.getItem('viewing_similarity');
+            const params = new URLSearchParams(window.location.search);
+            let viewingUserEmail = params.get('email');
+            let viewingSimilarity = params.get('similarity');
             
-            if (!viewingUserId) {
+            if (!viewingUserEmail) {
+                viewingUserEmail = localStorage.getItem('viewing_user_id');
+                viewingSimilarity = localStorage.getItem('viewing_similarity');
+            }
+            
+            if (!viewingUserEmail) {
                 showError();
                 return;
             }
             
-            await loadUserProfile(viewingUserId, viewingSimilarity);
+            await loadUserProfile(viewingUserEmail, viewingSimilarity);
         }
         
         async function loadUserProfile(userEmail, similarity) {
@@ -397,12 +403,12 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('content').style.display = 'block';
             
-            const name = data.user.name || data.user.email?.split('@')[0] || 'User';
+            const name = data.user?.name || data.user?.email?.split('@')[0] || 'User';
             document.getElementById('userAvatarLarge').textContent = name.charAt(0).toUpperCase();
             document.getElementById('profileUserName').textContent = name;
-            document.getElementById('profileUserEmail').textContent = data.user.email || '';
-            document.getElementById('profileUserAge').textContent = data.user.age || 'Not set';
-            document.getElementById('profileUserGoal').textContent = data.user.goal || 'Not set';
+            document.getElementById('profileUserEmail').textContent = data.user?.email || '';
+            document.getElementById('profileUserAge').textContent = data.user?.age || 'Not set';
+            document.getElementById('profileUserGoal').textContent = data.user?.goal || 'Not set';
             
             if (data.similarity !== undefined && data.similarity !== null) {
                 document.getElementById('similarityScore').textContent = Math.round(data.similarity) + '%';
@@ -411,19 +417,20 @@
                 document.querySelector('.similarity-display').style.display = 'none';
             }
             
-            if (data.personality) {
+            const currentLang = localStorage.getItem('lang') || 'en';
+            const t = translations[currentLang];
+            const pers = data.personality || {};
+            
+            if (pers) {
                 document.getElementById('traitsSection').style.display = 'block';
-                document.getElementById('personalityType').textContent = data.personality.personality_type || 'Balanced';
-                
-                const currentLang = localStorage.getItem('lang') || 'en';
-                const t = translations[currentLang];
+                document.getElementById('personalityType').textContent = pers.personality_type || 'Balanced';
                 
                 const traits = [
-                    { name: t.openness, value: data.personality.openness },
-                    { name: t.conscientiousness, value: data.personality.conscientiousness },
-                    { name: t.extraversion, value: data.personality.extraversion },
-                    { name: t.agreeableness, value: data.personality.agreeableness },
-                    { name: t.neuroticism, value: data.personality.neuroticism }
+                    { name: t.openness, value: pers.openness || 0 },
+                    { name: t.conscientiousness, value: pers.conscientiousness || 0 },
+                    { name: t.extraversion, value: pers.extraversion || 0 },
+                    { name: t.agreeableness, value: pers.agreeableness || 0 },
+                    { name: t.neuroticism, value: pers.neuroticism || 0 }
                 ];
                 
                 document.getElementById('traitsContainer').innerHTML = traits.map(trait => `

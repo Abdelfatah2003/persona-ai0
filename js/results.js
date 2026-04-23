@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const answers = JSON.parse(localStorage.getItem('answers'));
     
     if (!answers) {
-        window.location.href = 'test.html';
+        window.location.href = 'quiz-FIXED.html';
         return;
     }
     

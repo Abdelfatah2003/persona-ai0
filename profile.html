@@ -685,7 +685,7 @@
             
             document.getElementById('similarUsersSection').style.display = 'block';
             document.getElementById('similarUsersContainer').innerHTML = users.map(user => `
-                <div class="user-card" onclick="viewUserProfile('${user.user_id}', ${user.similarity})">
+                <div class="user-card" onclick="viewUserProfile('${user.email}', ${user.similarity})">
                     <div class="user-card-avatar">${(user.name || 'U').charAt(0).toUpperCase()}</div>
                     <div class="user-card-name">${user.name || 'Anonymous'}</div>
                     <div class="user-card-goal">${user.goal || 'No goal set'}</div>
@@ -698,10 +698,12 @@
             `).join('');
         }
         
-        function viewUserProfile(userId, similarity) {
-            localStorage.setItem('viewing_user_id', userId);
-            localStorage.setItem('viewing_similarity', similarity);
-            window.location.href = 'user-profile.html';
+        function viewUserProfile(userEmail, similarity) {
+            const params = new URLSearchParams({
+                email: userEmail,
+                similarity: similarity || 0
+            });
+            window.location.href = `user-profile.html?${params.toString()}`;
         }
         
         function displayLocalProfile(user, traits) {
