@@ -478,7 +478,7 @@
             
             const html = `
                 <div class="section-card welcome-card">
-                    <h2>${t.welcome}${firstName ? ', ' + firstName : ''}!</h2>
+                    <h2>${t.welcomeBack || 'Welcome'}${firstName ? ', ' + firstName : ''}!</h2>
                     <p>${t.analysisComplete || t.viewResults}</p>
                     <a href="profile.html" class="action-btn btn-action-primary" style="display: inline-block; text-decoration: none;">
                         ${t.viewProfile || t.viewResults} →
