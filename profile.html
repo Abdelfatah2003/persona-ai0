@@ -9,51 +9,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 <style>
-        .page-content {
+        .profile-wrapper {
             padding-top: 100px;
             min-height: 100vh;
             background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
         }
-        
         .profile-container {
             max-width: 1100px;
             margin: 0 auto;
             padding: 2rem;
             animation: fadeIn 0.5s ease;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .profile-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-        
-        .profile-header h1 {
-            font-size: 2.5rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-        
-        .user-info-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
+        .user-hero-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
             padding: 2.5rem;
             margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
-        
-        .user-info-card::before {
+        .user-hero-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -62,17 +39,11 @@
             height: 4px;
             background: var(--gradient-primary);
         }
-        
-        .user-info-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-        
-        .user-avatar-large {
+        .profile-avatar {
             width: 100px;
             height: 100px;
-            border-radius: 50%;
             background: var(--gradient-primary);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -81,308 +52,94 @@
             color: white;
             margin: 0 auto 1.5rem;
         }
-        
-        .user-name-display {
+        .profile-name {
             font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-align: center;
+            margin-bottom: 0.25rem;
         }
-        
-        .user-email-display {
+        .profile-email {
             color: var(--text-secondary);
-            font-size: 1.1rem;
             margin-bottom: 1.5rem;
-            text-align: center;
         }
-        
-        .user-stats {
+        .profile-stats {
             display: flex;
             justify-content: center;
             gap: 2rem;
-            margin-top: 1.5rem;
             padding-top: 1.5rem;
             border-top: 1px solid var(--border);
         }
-        
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-value {
+        .profile-stat-value {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
         }
-        
-        .stat-label {
+        .profile-stat-label {
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-        
-        .user-details-grid {
+        .details-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
+            gap: 1rem;
             margin-top: 1.5rem;
         }
-        
-        .detail-card {
-            background: rgba(99, 102, 241, 0.1);
-            padding: 1.5rem;
-            border-radius: 1rem;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
+        .detail-item {
+            background: var(--bg-card-solid);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
         }
-        
-        .detail-card:hover {
-            background: rgba(99, 102, 241, 0.15);
-            transform: translateY(-2px);
-            border-color: var(--primary);
-        }
-        
-        .detail-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .detail-value {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-        
-        .section-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        
-        .section-card:hover {
-            border-color: var(--primary);
-        }
-        
-        .section-card h2 {
-            font-size: 1.5rem;
-            color: var(--text);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .section-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-        
-        .personality-type-display {
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-            border-radius: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .personality-type-display h3 {
-            font-size: 2rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-        
-        .trait-row {
-            margin-bottom: 1.5rem;
-        }
-        
-        .trait-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .trait-name {
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .trait-score {
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .trait-bar-bg {
-            height: 12px;
-            background: var(--bg-secondary);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        
-        .trait-bar {
-            height: 100%;
-            background: var(--gradient-primary);
-            border-radius: 6px;
-            transition: width 1s ease;
-        }
-        
-        .trait-description {
+        .detail-item-label {
             font-size: 0.85rem;
             color: var(--text-secondary);
-            margin-top: 0.5rem;
+            margin-bottom: 0.25rem;
         }
-        
+        .detail-item-value {
+            font-weight: 600;
+        }
         .trait-detail-card {
-            background: var(--bg-secondary);
+            background: var(--bg-card-solid);
             padding: 1.5rem;
-            border-radius: 1rem;
+            border-radius: var(--radius-lg);
             margin-bottom: 1rem;
             border-left: 4px solid var(--primary);
         }
-        
-        .career-grid-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .career-item {
-            background: var(--bg-secondary);
+        .trait-detail-card.high { border-left-color: var(--success); }
+        .trait-detail-card.medium { border-left-color: var(--warning); }
+        .trait-detail-card.low { border-left-color: var(--danger); }
+        .career-card {
+            background: var(--bg-card-solid);
             padding: 1.5rem;
-            border-radius: 1rem;
-            transition: all 0.3s ease;
+            border-radius: var(--radius-lg);
             border: 1px solid var(--border);
         }
-        
-        .career-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        .career-card:hover {
             border-color: var(--primary);
+            transform: translateY(-4px);
         }
-        
-        .career-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .career-match-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: var(--gradient-primary);
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: white;
-        }
-        
-        .career-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 0.75rem;
-        }
-        
-        .career-skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        
-        .skill-tag {
-            padding: 0.25rem 0.75rem;
-            background: rgba(99, 102, 241, 0.2);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--primary);
-        }
-        
-        .users-grid-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .user-card {
-            background: var(--bg-secondary);
+        .similar-user-card {
+            background: var(--bg-card-solid);
             padding: 1.5rem;
-            border-radius: 1rem;
+            border-radius: var(--radius-lg);
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
             border: 1px solid var(--border);
         }
-        
-        .user-card:hover {
-            transform: translateY(-4px);
+        .similar-user-card:hover {
             border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
         }
-        
-        .user-card-avatar {
+        .similar-user-avatar {
             width: 60px;
             height: 60px;
-            border-radius: 50%;
             background: var(--gradient-primary);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
             font-weight: 700;
-            color: white;
             margin: 0 auto 1rem;
         }
-        
-        .user-card-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        
-        .user-card-match {
-            color: var(--primary);
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-        
-        .loading-state {
-            text-align: center;
-            padding: 4rem;
-        }
-        
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1.5rem;
-        }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -433,11 +190,91 @@
         </div>
     </nav>
 
-    <div class="page-content">
+<div class="profile-wrapper">
         <div class="profile-container">
-            <div class="profile-header">
-                <h1 data-i18n="myProfile">My Profile</h1>
+            <div id="loading" class="loading-container">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading your profile...</p>
             </div>
+
+            <div id="content" style="display: none;">
+                <div class="user-hero-card">
+                    <div class="profile-avatar" id="userAvatarLarge">?</div>
+                    <div class="profile-name" id="userNameDisplay">Loading...</div>
+                    <div class="profile-email" id="userEmailDisplay">...</div>
+                    
+                    <div class="profile-stats">
+                        <div>
+                            <div class="profile-stat-value" id="quizCount">1</div>
+                            <div class="profile-stat-label">Quiz Taken</div>
+                        </div>
+                        <div>
+                            <div class="profile-stat-value" id="traitHigh">-</div>
+                            <div class="profile-stat-label">Strongest Trait</div>
+                        </div>
+                        <div>
+                            <div class="profile-stat-value" id="traitLow">-</div>
+                            <div class="profile-stat-label">Lowest Trait</div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-item-label">Email</div>
+                            <div class="detail-item-value" id="userEmail">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-item-label">Age</div>
+                            <div class="detail-item-value" id="userAge">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-item-label">Career Goal</div>
+                            <div class="detail-item-value" id="userGoal">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-card" id="personalitySection" style="display: none;">
+                    <div class="section-header">
+                        <div class="section-icon">🧠</div>
+                        <h2 class="section-title">My Personality Traits</h2>
+                    </div>
+                    
+                    <div class="personality-type-display" style="text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); border-radius: var(--radius-lg); margin-bottom: 2rem;">
+                        <h3 id="personalityType" style="font-size: 2rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">Loading...</h3>
+                        <p style="color: var(--text-secondary);">Your dominant personality type based on the Big Five model</p>
+                    </div>
+                    
+                    <div id="traitsContainer"></div>
+                </div>
+                
+                <div class="section-card" id="careersSection" style="display: none;">
+                    <div class="section-header">
+                        <div class="section-icon">💼</div>
+                        <h2 class="section-title">My Career Matches</h2>
+                    </div>
+                    <div class="career-grid" id="careersContainer"></div>
+                </div>
+                
+                <div class="section-card" id="similarUsersSection" style="display: none;">
+                    <div class="section-header">
+                        <div class="section-icon">👥</div>
+                        <h2 class="section-title">People Like You</h2>
+                    </div>
+                    <div class="user-grid" id="similarUsersContainer"></div>
+                </div>
+                
+                <div class="action-buttons" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <a href="quiz-FIXED.html" class="btn btn-primary">Take Quiz Again</a>
+                    <a href="index.html" class="btn btn-secondary">Home</a>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button onclick="logout()" class="btn btn-danger">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
             
             <div id="loading">
                 <div class="loading-state">
@@ -723,8 +560,11 @@ async function loadSimilarUsersFromBackend(userData) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('content').style.display = 'block';
             
-            document.getElementById('userNameDisplay').textContent = user.name || 'Anonymous';
+            const name = user.name || 'Anonymous';
+            document.getElementById('userAvatarLarge').textContent = name.charAt(0).toUpperCase();
+            document.getElementById('userNameDisplay').textContent = name;
             document.getElementById('userEmailDisplay').textContent = user.email || '';
+            document.getElementById('userEmail').textContent = user.email || '-';
             document.getElementById('userAge').textContent = user.age || 'Not set';
             document.getElementById('userGoal').textContent = user.goal || 'Not set';
             
@@ -741,17 +581,19 @@ async function loadSimilarUsersFromBackend(userData) {
                 
                 document.getElementById('personalityType').textContent = types.slice(0, 2).join(" & ");
                 
-                document.getElementById('traitsContainer').innerHTML = [
-                    { name: 'Openness', value: traits.openness },
+                const traitValues = [
+                    { name: 'Openness to Experience', value: traits.openness },
                     { name: 'Conscientiousness', value: traits.conscientiousness },
                     { name: 'Extraversion', value: traits.extraversion },
                     { name: 'Agreeableness', value: traits.agreeableness },
                     { name: 'Neuroticism', value: traits.neuroticism }
-                ].map(trait => `
-                    <div class="trait-row">
+                ];
+                
+                document.getElementById('traitsContainer').innerHTML = traitValues.map(trait => `
+                    <div class="trait-detail-card">
                         <div class="trait-header">
-                            <span class="trait-name">${trait.name}</span>
-                            <span class="trait-score">${trait.value}%</span>
+                            <span class="trait-name"><strong>${trait.name}</strong></span>
+                            <span class="trait-score">${Math.round(trait.value)}%</span>
                         </div>
                         <div class="trait-bar-bg">
                             <div class="trait-bar" style="width: ${trait.value}%"></div>
