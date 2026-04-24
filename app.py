@@ -8,7 +8,7 @@ CORS(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-MONGO_URI = os.environ.get('MONGO_URI', 'mongodb+srv://render:A.m.z.55@cluster0.y4unpuc.mongodb.net/personaai?retryWrites=true&w=majority')
+MONGO_URI = os.environ.get('MONGO_URI')
 
 client = MongoClient(MONGO_URI)
 db = client.get_default_database()
