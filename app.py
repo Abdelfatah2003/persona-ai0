@@ -1,16 +1,19 @@
 import os
-import json
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
+from pymongo import MongoClient
 
 app = Flask(__name__)
-
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-users_db = {}
-personality_db = {}
+MONGO_URI = os.environ.get('MONGO_URI', 'mongodb+srv://render:A.m.z.55@cluster0.y4unpuc.mongodb.net/personaai?retryWrites=true&w=majority')
+
+client = MongoClient(MONGO_URI)
+db = client.get_default_database()
+users_col = db['users']
+personality_col = db['personalities']
 
 def calculate_traits(answers):
     return {
@@ -23,38 +26,22 @@ def calculate_traits(answers):
 
 def get_personality_type(traits):
     types = []
-    if traits.get("openness", 0) > 60:
-        types.append("Explorer")
-    if traits.get("conscientiousness", 0) > 60:
-        types.append("Achiever")
-    if traits.get("extraversion", 0) > 60:
-        types.append("Socializer")
-    if traits.get("agreeableness", 0) > 60:
-        types.append("Helper")
-    if traits.get("neuroticism", 0) < 40:
-        types.append("Stabilizer")
+    if traits.get("openness", 0) > 60: types.append("Explorer")
+    if traits.get("conscientiousness", 0) > 60: types.append("Achiever")
+    if traits.get("extraversion", 0) > 60: types.append("Socializer")
+    if traits.get("agreeableness", 0) > 60: types.append("Helper")
+    if traits.get("neuroticism", 0) < 40: types.append("Stabilizer")
     return " & ".join(types) if types else "Balanced"
 
 def get_career_recommendations(traits):
     careers = []
-    openness = traits.get("openness", 0)
-    conscientiousness = traits.get("conscientiousness", 0)
-    extraversion = traits.get("extraversion", 0)
-    agreeableness = traits.get("agreeableness", 0)
-    
-    if openness > 50:
-        careers.append({"name": "Data Scientist", "description": "Analyze data and build predictive models", "match_score": 92, "skills": ["Python", "Machine Learning", "Statistics"]})
-    if conscientiousness > 50:
-        careers.append({"name": "Software Engineer", "description": "Design and build software solutions", "match_score": 88, "skills": ["Python", "JavaScript", "Data Structures"]})
-    if openness > 60 and conscientiousness > 60:
-        careers.append({"name": "AI/ML Engineer", "description": "Develop artificial intelligence systems", "match_score": 90, "skills": ["Deep Learning", "TensorFlow", "NLP"]})
-    if extraversion > 60:
-        careers.append({"name": "Product Manager", "description": "Lead product development", "match_score": 85, "skills": ["Leadership", "Communication", "Strategy"]})
-    if agreeableness > 60:
-        careers.append({"name": "UX Designer", "description": "Design user experiences", "match_score": 82, "skills": ["Design", "Empathy", "Research"]})
-    if not careers:
-        careers.append({"name": "Generalist", "description": "Versatile role", "match_score": 70, "skills": ["Communication", "Problem Solving"]})
-    return [{"name": c["name"], "description": c["description"], "match_score": c["match_score"], "skills": c["skills"]} for c in careers[:4]]
+    o, c, e, a = traits.get("openness", 0), traits.get("conscientiousness", 0), traits.get("extraversion", 0), traits.get("agreeableness", 0)
+    if o > 50: careers.append({"name": "Data Scientist", "match_score": 92, "description": "Analyze data and build predictive models", "skills": ["Python", "Machine Learning"]})
+    if c > 50: careers.append({"name": "Software Engineer", "match_score": 88, "description": "Design and build software solutions", "skills": ["JavaScript", "Python"]})
+    if o > 60 and c > 60: careers.append({"name": "AI/ML Engineer", "match_score": 90, "description": "Develop AI systems", "skills": ["TensorFlow", "Deep Learning"]})
+    if e > 60: careers.append({"name": "Product Manager", "match_score": 85, "description": "Lead product development", "skills": ["Leadership", "Strategy"]})
+    if a > 60: careers.append({"name": "UX Designer", "match_score": 82, "description": "Design user experiences", "skills": ["Design", "Empathy"]})
+    return careers[:4] or [{"name": "Generalist", "match_score": 70, "description": "Versatile role", "skills": ["Communication"]}]
 
 @app.route('/')
 def index():
@@ -64,36 +51,22 @@ def index():
 def serve_static(filename):
     return send_from_directory(BASE_DIR, filename)
 
-@app.route('/api/health', methods=['GET'])
+@app.route('/api/health')
 def health():
-    return jsonify({'status': 'healthy', 'message': 'API is running', 'version': '2.0.0'})
+    return jsonify({'status': 'healthy', 'version': '2.0.0'})
 
 @app.route('/api/auth/register', methods=['POST'])
 def register():
     data = request.get_json()
     email = data.get('email', '').lower()
     password = data.get('password', '')
-    name = data.get('name', '')
+    name = data.get('name', email.split('@')[0])
     
-    if not email or not password:
-        return jsonify({'error': 'Email and password required'}), 400
-    
-    if email in users_db:
+    if users_col.find_one({'email': email}):
         return jsonify({'error': 'Email already registered'}), 400
     
-    user_id = f"user_{len(users_db) + 1}"
-    users_db[email] = {
-        'id': user_id,
-        'email': email,
-        'password': password,
-        'name': name or email.split('@')[0]
-    }
-    
-    return jsonify({
-        'success': True,
-        'user': {'id': user_id, 'email': email, 'name': name},
-        'token': f"token_{user_id}"
-    })
+    user_id = users_col.insert_one({'email': email, 'password': password, 'name': name}).inserted_id
+    return jsonify({'success': True, 'user': {'id': str(user_id), 'email': email, 'name': name}})
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
@@ -101,56 +74,27 @@ def login():
     email = data.get('email', '').lower()
     password = data.get('password', '')
     
-    user = users_db.get(email)
-    if not user or user['password'] != password:
+    user = users_col.find_one({'email': email, 'password': password})
+    if not user:
         return jsonify({'error': 'Invalid credentials'}), 401
     
-    return jsonify({
-        'success': True,
-        'user': {'id': user['id'], 'email': user['email'], 'name': user['name']},
-        'token': f"token_{user['id']}"
-    })
+    return jsonify({'success': True, 'user': {'id': str(user['_id']), 'email': user['email'], 'name': user['name']}})
+
+@app.route('/api/auth/user/<email>')
+def get_user(email):
+    user = users_col.find_one({'email': email.lower()})
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    return jsonify({'success': True, 'user': {'id': str(user['_id']), 'email': user['email'], 'name': user['name']}})
 
 @app.route('/api/personality/analyze', methods=['POST'])
 def analyze():
     data = request.get_json()
     answers = data.get('answers', [])
-    
     if len(answers) != 50:
         return jsonify({'error': 'Need 50 answers'}), 400
-    
     traits = calculate_traits(answers)
-    personality_type = get_personality_type(traits)
-    
-    return jsonify({
-        'success': True,
-        'traits': traits,
-        'personality_type': personality_type
-    })
-
-@app.route('/api/personality/analyze-text', methods=['POST'])
-def analyze_text():
-    data = request.get_json()
-    text = data.get('text', '')
-    
-    word_count = len(text.split())
-    text_length = len(text)
-    
-    traits = {
-        "openness": min(100, 50 + (text_length // 100)),
-        "conscientiousness": min(100, 50 + (word_count // 10)),
-        "extraversion": min(100, 50 + (text.count('!') + text.count(',')) * 5),
-        "agreeableness": min(100, 50 + (text.lower().count('we') + text.lower().count('together')) * 3),
-        "neuroticism": max(0, 50 - text.count('worried'))
-    }
-    personality_type = get_personality_type(traits)
-    
-    return jsonify({
-        'success': True,
-        'traits': traits,
-        'personality_type': personality_type,
-        'analysis': {'word_count': word_count, 'text_length': text_length}
-    })
+    return jsonify({'success': True, 'traits': traits, 'personality_type': get_personality_type(traits)})
 
 @app.route('/api/personality/save', methods=['POST'])
 def save_personality():
@@ -158,84 +102,41 @@ def save_personality():
     email = data.get('email', '').lower()
     traits = data.get('traits', {})
     
-    if not email:
-        return jsonify({'error': 'Email required'}), 400
-    
-    personality_db[email] = {
-        'email': email,
-        'traits': traits,
-        'personality_type': get_personality_type(traits)
-    }
-    
-    return jsonify({'success': True, 'message': 'Personality saved'})
+    personality_col.update_one(
+        {'email': email},
+        {'$set': {'email': email, 'traits': traits, 'personality_type': get_personality_type(traits)}},
+        upsert=True
+    )
+    return jsonify({'success': True})
 
-@app.route('/api/personality/get/<email>', methods=['GET'])
+@app.route('/api/personality/get/<email>')
 def get_personality(email):
-    email = email.lower()
-    personality = personality_db.get(email)
-    
-    if not personality:
-        return jsonify({'error': 'No personality found', 'personality': None}), 404
-    
-    return jsonify({
-        'success': True,
-        'personality': personality
-    })
+    pers = personality_col.find_one({'email': email.lower()})
+    if not pers:
+        return jsonify({'error': 'Not found', 'personality': None}), 404
+    return jsonify({'success': True, 'personality': {'email': pers['email'], 'traits': pers['traits'], 'personality_type': pers.get('personality_type', 'Balanced')}})
 
 @app.route('/api/recommendations/careers', methods=['POST'])
 def careers():
-    data = request.get_json()
-    traits = data.get('traits', {})
-    
-    if not traits:
-        return jsonify({'error': 'Traits required'}), 400
-    
-    recommendations = get_career_recommendations(traits)
-    
-    return jsonify({
-        'success': True,
-        'careers': recommendations
-    })
+    traits = request.get_json().get('traits', {})
+    return jsonify({'success': True, 'careers': get_career_recommendations(traits)})
 
-@app.route('/api/recommendations/users/<email>', methods=['GET'])
+@app.route('/api/recommendations/users/<email>')
 def similar_users(email):
-    email = email.lower()
-    current_personality = personality_db.get(email)
-    
-    if not current_personality:
+    current = personality_col.find_one({'email': email.lower()})
+    if not current:
         return jsonify({'error': 'User not found'}), 404
     
     similar = []
-    for user_email, pers in personality_db.items():
-        if user_email != email:
-            current_traits = current_personality.get('traits', {})
-            other_traits = pers.get('traits', {})
-            similarity = 100 - abs(current_traits.get('openness', 0) - other_traits.get('openness', 0)) * 0.5
-            if similarity > 70:
-                similar.append({
-                    'email': user_email,
-                    'name': users_db.get(user_email, {}).get('name', user_email.split('@')[0]),
-                    'similarity': round(similarity, 1),
-                    'traits': other_traits
-                })
+    for pers in personality_col.find({'email': {'$ne': email.lower()}}):
+        c_t = current.get('traits', {})
+        o_t = pers.get('traits', {})
+        sim = max(0, 100 - abs(c_t.get('openness', 0) - o_t.get('openness', 0)) * 0.5)
+        if sim > 70:
+            user = users_col.find_one({'email': pers['email']})
+            similar.append({'email': pers['email'], 'name': user['name'] if user else pers['email'], 'similarity': round(sim), **o_t})
     
-    return jsonify({
-        'success': True,
-        'similar_users': sorted(similar, key=lambda x: x['similarity'], reverse=True)[:5]
-    })
-
-@app.route('/api/auth/user/<email>', methods=['GET'])
-def get_user(email):
-    email = email.lower()
-    user = users_db.get(email)
-    
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-    
-    return jsonify({
-        'success': True,
-        'user': {'id': user['id'], 'email': user['email'], 'name': user['name']}
-    })
+    return jsonify({'success': True, 'similar_users': sorted(similar, key=lambda x: x['similarity'], reverse=True)[:5]})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
